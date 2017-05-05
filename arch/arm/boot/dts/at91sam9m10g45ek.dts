@@ -282,28 +282,22 @@
 	leds {
 		compatible = "gpio-leds";
 
-		d8 {
-			label = "d8";
-			gpios = <&pioD 30 GPIO_ACTIVE_HIGH>;
+		led0yellow {
+			label = "led0yellow";
+			gpios = <&pioD 30 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "heartbeat";
 		};
-	};
 
-	pwmleds {
-		compatible = "pwm-leds";
-
-		d6 {
-			label = "d6";
-			pwms = <&pwm0 3 5000 PWM_POLARITY_INVERTED>;
-			max-brightness = <255>;
+		led1green {
+			label = "led1green";
+			gpios = <&pioD 0 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "nand-disk";
 		};
 
-		d7 {
-			label = "d7";
-			pwms = <&pwm0 1 5000 PWM_POLARITY_INVERTED>;
-			max-brightness = <255>;
-			linux,default-trigger = "mmc0";
+		led2green {
+			label = "led2green";
+			gpios = <&pioD 31 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "none";
 		};
 	};
 
