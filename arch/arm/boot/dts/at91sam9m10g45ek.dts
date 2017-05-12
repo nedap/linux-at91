@@ -39,10 +39,19 @@
 			};
 
 			usart1: serial@fff90000 {
-				pinctrl-0 =
-					<&pinctrl_usart1
-					 &pinctrl_usart1_rts
-					 &pinctrl_usart1_cts>;
+				pinctrl-0 = <&pinctrl_usart1 &pinctrl_usart1_rts>;
+				linux,rs485-enabled-at-boot-time;
+				status = "okay";
+			};
+
+			usart2: serial@fff94000 {
+				pinctrl-0 = <&pinctrl_usart2>;
+				status = "okay";
+			};
+
+			usart3: serial@fff98000 {
+				pinctrl-0 = <&pinctrl_usart3 &pinctrl_usart3_rts>;
+				linux,rs485-enabled-at-boot-time;
 				status = "okay";
 			};
 

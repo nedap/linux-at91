@@ -23,10 +23,9 @@
 
 	aliases {
 		serial0 = &dbgu;
-		serial1 = &usart0;
-		serial2 = &usart1;
-		serial3 = &usart2;
-		serial4 = &usart3;
+		serial1 = &usart1;
+		serial2 = &usart2;
+		serial3 = &usart3;
 		gpio0 = &pioA;
 		gpio1 = &pioB;
 		gpio2 = &pioC;
