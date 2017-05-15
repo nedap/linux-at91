@@ -828,7 +828,7 @@ static int atmel_spi_set_xfer_speed(struct atmel_spi *as,
 	if (scbr >= (1 << SPI_SCBR_SIZE)) {
 		dlybct = scbr >> 5;
 		scbr = 0xff;
-			/*
+		/*
 		 * If the resulting divider doesn't fit into the
 		 * register bitfield, we can't satisfy the constraint.
 		 */
