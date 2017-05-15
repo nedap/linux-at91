@@ -807,7 +807,7 @@ static int atmel_spi_set_xfer_speed(struct atmel_spi *as,
 				    struct spi_device *spi,
 				    struct spi_transfer *xfer)
 {
-	u32			scbr, csr;
+	u32			scbr, csr, dlybct = 0;
 	unsigned long		bus_hz;
 
 	/* v1 chips start out at half the peripheral bus speed. */
@@ -823,13 +823,21 @@ static int atmel_spi_set_xfer_speed(struct atmel_spi *as,
 
 	/*
 	 * If the resulting divider doesn't fit into the
-	 * register bitfield, we can't satisfy the constraint.
+	 * register bitfield, we try to change the delay between the words.
 	 */
 	if (scbr >= (1 << SPI_SCBR_SIZE)) {
-		dev_err(&spi->dev,
-			"setup: %d Hz too slow, scbr %u; min %ld Hz\n",
-			xfer->speed_hz, scbr, bus_hz/255);
-		return -EINVAL;
+		dlybct = scbr >> 5;
+		scbr = 0xff;
+		/*
+		 * If the resulting divider doesn't fit into the
+		 * register bitfield, we can't satisfy the constraint.
+		 */
+		if (dlybct >= (1 << SPI_DLYBCT_SIZE)) {
+			dev_dbg(&spi->dev,
+				"setup: %d Hz too slow, scbr %u, dlybct %u; min %ld Hz\n",
+				xfer->speed_hz, scbr, dlybct, bus_hz/255);
+			return -EINVAL;
+		}
 	}
 	if (scbr == 0) {
 		dev_err(&spi->dev,
@@ -1171,7 +1179,7 @@ static int atmel_spi_setup(struct spi_device *spi)
 	 * in those cases it's probably best to just use a lower bitrate.
 	 */
 	csr |= SPI_BF(DLYBS, 0);
-	csr |= SPI_BF(DLYBCT, 0);
+	csr |= SPI_BF(DLYBCT, dlybct);
 
 	/* chipselect must have been muxed as GPIO (e.g. in board setup) */
 	npcs_pin = (unsigned long)spi->controller_data;
