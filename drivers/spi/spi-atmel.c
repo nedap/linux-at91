@@ -847,6 +847,7 @@ static int atmel_spi_set_xfer_speed(struct atmel_spi *as,
 	}
 	csr = spi_readl(as, CSR0 + 4 * spi->chip_select);
 	csr = SPI_BFINS(SCBR, scbr, csr);
+	csr |= SPI_BF(DLYBCT, dlybct);
 	spi_writel(as, CSR0 + 4 * spi->chip_select, csr);
 
 	return 0;
@@ -1179,7 +1180,7 @@ static int atmel_spi_setup(struct spi_device *spi)
 	 * in those cases it's probably best to just use a lower bitrate.
 	 */
 	csr |= SPI_BF(DLYBS, 0);
-	csr |= SPI_BF(DLYBCT, dlybct);
+	csr |= SPI_BF(DLYBCT, 0);
 
 	/* chipselect must have been muxed as GPIO (e.g. in board setup) */
 	npcs_pin = (unsigned long)spi->controller_data;
