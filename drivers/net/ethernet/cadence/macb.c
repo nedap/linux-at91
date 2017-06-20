@@ -66,6 +66,9 @@
  */
 #define MACB_HALT_TIMEOUT	1230
 
+/* Select nedap macb style */
+#define CONFIG_MACB_NEDAP
+
 /* Ring buffer accessors */
 static unsigned int macb_tx_ring_wrap(unsigned int index)
 {
@@ -220,7 +223,7 @@ static void macb_get_hwaddr(struct macb *bp)
 
 static int macb_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
 {
-#if false
+#ifndef CONFIG_MACB_NEDAP
 	struct macb *bp = bus->priv;
 	int value;
 
@@ -237,7 +240,7 @@ static int macb_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
 	value = MACB_BFEXT(DATA, macb_readl(bp, MAN));
 
 	return value;
-#endif
+#else
 	// Since the MDIO bus is not connected on the renos board, we will fake it
 	// The registers have fixed values since the mac is directly connected to the onboard micrel switch
 	switch (regnum) {
@@ -253,12 +256,13 @@ static int macb_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
 		case 0x0A: return 0;			// 1000BASE-T status
 		default: return 0xFFFF;
 	}
+#endif
 }
 
 static int macb_mdio_write(struct mii_bus *bus, int mii_id, int regnum,
 			   u16 value)
 {
-#if false
+#ifndef CONFIG_MACB_NEDAP
 	struct macb *bp = bus->priv;
 
 	macb_writel(bp, MAN, (MACB_BF(SOF, MACB_MAN_SOF)
