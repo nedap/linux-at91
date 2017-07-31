@@ -738,6 +738,11 @@ static void spidev_probe_acpi(struct spi_device *spi)
 static inline void spidev_probe_acpi(struct spi_device *spi) {}
 #endif
 
+static const struct of_device_id spidev_check[] = {
+	{ .compatible = "spidev" },
+	{}
+};
+
 /*-------------------------------------------------------------------------*/
 
 static int spidev_probe(struct spi_device *spi)
@@ -751,10 +756,10 @@ static int spidev_probe(struct spi_device *spi)
 	 * compatible string, it is a Linux implementation thing
 	 * rather than a description of the hardware.
 	 */
-	if (spi->dev.of_node && !of_match_device(spidev_dt_ids, &spi->dev)) {
+	if (spi->dev.of_node && of_match_device(spidev_check, &spi->dev)) {
 		dev_err(&spi->dev, "buggy DT: spidev listed directly in DT\n");
 		WARN_ON(spi->dev.of_node &&
-			!of_match_device(spidev_dt_ids, &spi->dev));
+			of_match_device(spidev_check, &spi->dev));
 	}
 
 	spidev_probe_acpi(spi);
